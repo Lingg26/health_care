@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.9
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: docker
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    volumes:
+      - ./docker/php-phpmyadmin.ini:/usr/local/etc/php/conf.d/php-phpmyadmin.ini
+    environment:
+#      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+      - PMA_USER=docker
+      - PMA_PASSWORD=docker
+    ports:
+      - 20080:80
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    #image: be_app:latest
+    ports:
+      - 8000:${PORT:-8000}
+        #command: poetry run uvicorn matching_app.main:app --reload --host 0.0.0.0 --port ${PORT:-8000}
+    command: sh -c 'poetry install && alembic upgrade head && poetry run uvicorn health.main:app --reload --host 0.0.0.0 --port ${PORT:-8000}'
+    volumes:
+      - ./:/app/
+      - poetry_data:/root/.cache/pypoetry/virtualenvs/
+    env_file:
+      - .env
+volumes:
+  db_data:
+  poetry_data:
