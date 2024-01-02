@@ -1,0 +1,5 @@
+FROM python:3.9-buster
+WORKDIR /app
+ADD requirements.txt .
+RUN pip install poetry && pip install -r requirements.txt && python3 -m  pip install uvicorn[standard]
+EXPOSE 8000
