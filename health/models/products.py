@@ -37,6 +37,11 @@ class Products(Base, TimestampMixin, table=True):
         sa_relationship_kwargs={"uselist": False}
     )
 
+    order: List["OrdersItem"] = Relationship(
+        back_populates="product_order",
+        sa_relationship_kwargs={"uselist": True},
+    )
+
 class ProductRegister(SQLModel):
     name: str = Field(nullable=False)
     unit: str = Field(nullable=False)

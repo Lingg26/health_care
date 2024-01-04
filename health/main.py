@@ -31,10 +31,10 @@ def setup_static_files(app):
     """
     Configure static file directories for the FastAPI app.
     """
-    os.makedirs("matching_app/static/images", exist_ok=True)
+    os.makedirs("health/static/images", exist_ok=True)
     app.mount(
-        "/matching_app/static",
-        StaticFiles(directory="matching_app/static"),
+        "/health/static",
+        StaticFiles(directory="health/static"),
         name="static",
     )
 
