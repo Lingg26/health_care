@@ -1,0 +1,2 @@
+class ChatHistoryResponseSchema():
+    pass

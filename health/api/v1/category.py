@@ -1,12 +1,9 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from health import models
 from health.crud import category_service
 from health.models import CategoryRegister, CategoryUpdate
-from health.schemas.base import Paginate
 from health.schemas.category import CategoryListResponse, CategoryListQuerySchema
 from health.shared.core_type import UserType, DeleteFlag
 from health.tools.deps import get_current_authenticated_user, get_database_session

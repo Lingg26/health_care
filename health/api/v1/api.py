@@ -1,6 +1,6 @@
 # Initialize the main API router
 from fastapi import APIRouter
-from health.api.v1 import auth, account, category, news, product
+from health.api.v1 import auth, account, category, news, product, orders, chat_with_admin
 
 
 def include_router(api_router: APIRouter, module, tag, prefix):
@@ -19,6 +19,8 @@ router_modules = [
     {'module': category, 'tag': 'Category', 'prefix': 'category'},
     {'module': news, 'tag': 'News', 'prefix': 'news'},
     {'module': product, 'tag': 'Product', 'prefix': 'product'},
+    {'module': orders, 'tag': 'Order', 'prefix': 'orders'},
+    {'module': chat_with_admin, 'tag': 'Chat with admin', 'prefix': 'chat_with_admin'}
 ]
 
 # Include the router modules dynamically

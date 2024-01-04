@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "matching-app-be"
+name = "health-be"
 version = "0.1.0"
 description = ""
 authors = []

@@ -3,14 +3,16 @@ from sqlalchemy import or_
 
 from health import models
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
 
 from health.crud import product_service, category_service
 from health.models import ProductRegister, Category
 from health.schemas.product import ProductRequestSchema, ProductListRespnseSchema, ProductResponseSchema
 from health.shared.core_type import UserType
+from health.shared.file_operator import create_and_save_file, validate_uploaded_file
 from health.tools.deps import get_current_authenticated_user, get_database_session
+from health.utils import generate_uuid
 
 router = APIRouter()
 
@@ -91,3 +93,18 @@ async def create_product(
             status.HTTP_403_FORBIDDEN,
             detail="Account don't have permission"
         )
+
+@router.patch('/upload_image', summary='Update image product')
+async def upload_user_avatar(
+    current_user: models.Account = Depends(get_current_authenticated_user),
+    image: UploadFile = File(default=None),
+    db: Session = Depends(get_database_session),
+) -> dict:
+    """
+    Upload a new avatar for the current user.
+    """
+    validate_uploaded_file(image)
+    file_name = f'{generate_uuid()}'
+    avt_name = create_and_save_file(file=image, file_name=file_name)['path']
+
+    return {'image_path': avt_name}
