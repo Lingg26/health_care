@@ -11,6 +11,7 @@ class Category(Base, TimestampMixin, table=True):
 
     category_name: str = Field(nullable=False)
     notes: Optional[str] = Field(sa_column=Column(Text), nullable=True)
+    image: Optional[str] = Field(nullable=True)
     parent_category_id: Optional[int] = Field(nullable=True)
 
     product: List["Products"] = Relationship(
@@ -22,10 +23,12 @@ class Category(Base, TimestampMixin, table=True):
 class CategoryRegister(SQLModel):
     category_name: str = Field(nullable=False)
     parent_category_id: Optional[int] = Field(nullable=True)
-    notes: Optional[str] = Field(sa_column=Column(Text), nullable=True)
+    notes: Optional[str] = Field(nullable=True)
+    image: Optional[str] = Field()
 
 
 class CategoryUpdate(SQLModel):
     category_name: str = Field(nullable=False)
     parent_category_id: Optional[int] = Field(nullable=True)
-    notes: Optional[str] = Field(sa_column=Column(Text), nullable=True)
+    notes: Optional[str] = Field( nullable=True)
+    image: Optional[str] = Field()
