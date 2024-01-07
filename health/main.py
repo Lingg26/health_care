@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 from starlette.staticfiles import StaticFiles
 
+from health.app.ws.socket_manager import SocketManager
+
 load_dotenv()
 
 from fastapi import FastAPI
@@ -64,4 +66,4 @@ setup_static_files(app)
 # Include the main API router
 app.include_router(main_api_router, prefix=settings.API_V1_STR)
 
-# sio = SocketManager(app=app)
+sio = SocketManager(app=app)
