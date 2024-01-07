@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List
 from typing import Optional
 
@@ -28,5 +29,8 @@ class OrderDetailInDB(BaseModel):
 class OrderDetailListResponseSchema(BaseModel):
     data: List[OrderDetailInDB]
 
+class StatisticQuery(BaseRequestListSchema):
+    start_date: Optional[date]
+    end_date: Optional[date]
 
 
