@@ -37,81 +37,29 @@ class ChatNamespace(AsyncNamespace):
 
     async def on_send_message(self, sid, data):
         async with self.session(sid) as session:
-            account_id = session.get("account_id", "Anonymous")
+            account_id = session.get("id", "Anonymous")
 
         room = data.get('room')
         message = data.get('message')
-        account_name = data.get("account_name")
-        display_name = data.get("display_name")
-        upload_file_path = data.get("upload_file_path")
 
         db = SessionLocal()
-        matching = db.query(models.Matching).filter(models.Matching.matching_id == room).first()
-        if matching:
-            new_chat = models.Chat(
-                matching_id=room,
-                chat_text=message,
-                send_account_id=account_id,
-                is_read=0,
-                is_system_write=0,
-            )
-            db.add(new_chat)
-            db.commit()
-
-            # Check who is in the room
-            clients = list(room_clients.get(room, []))
-            if sid in clients:
-                clients.remove(sid)  # Remove the sender's sid
-
-            chat_obj = new_chat.dict()
-            chat_obj['account_name'] = account_name
-            chat_obj['display_name'] = display_name
-            chat_obj['upload_file_path'] = upload_file_path
-
-            if not clients:
-                target_account_id = matching.account_id if matching.target_account_id == account_id else matching.target_account_id
-                existing_notice = (
-                    db.query(models.Notice)
-                    .filter(
-                        models.Notice.account_id == target_account_id,
-                        models.Notice.notice_type == 5,
-                        models.Notice.matching_id == matching.matching_id
-                    )
-                    .first()
-                )
-                if not existing_notice:
-                    # Register notice
-                    notification = models.Notice(
-                        matching_id=new_chat.matching_id,
-                        account_id=matching.account_id if matching.target_account_id == account_id else matching.target_account_id,
-                        display_text=f'{display_name}さんから新規チャットが届いています。',
-                        notice_type=5,
-                    )
-                    new_notice = notice_service.register(db, notification)
-
-                    notice = notification.dict()
-                    notice["notice_id"] = new_notice.notice_id
-                    notice["created_at"] = str(new_notice.created_at)
-                    await self.emit(
-                        'new_notice',
-                        {
-                            "Notice": notice,
-                            "matching_status": matching.matching_status
-                        },
-                        room=f"account_{target_account_id}",  # Send the message to the recipient
-                    )
-                else:
-                    existing_notice.created_at = datetime.now()
-                    db.commit()
-            await self.emit(
-                'new_message',
-                {
-                    'account_id': account_id,
-                    'message': message,
-                    'data': {'chat_obj': chat_obj},
-                },
-                room=room,  # Send the message to the recipient
-            )
+        new_chat = models.ChatHistory(
+            account_id=room,
+            message=message,
+            sent_account_id=account_id,
+            status="sent"
+        )
+        db.add(new_chat)
+        db.commit()
+        chat_obj = message
+        await self.emit(
+            'new_message',
+            {
+                'message': message,
+                'data': {'chat_obj': chat_obj},
+            },
+            room=room,  # Send the message to the recipient
+        )
 
 
 class SocketManager:
