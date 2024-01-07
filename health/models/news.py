@@ -11,13 +11,16 @@ class News(Base, TimestampMixin, table=True):
 
     title: str = Field(nullable=False)
     content: Optional[str] = Field(sa_column=Column(Text), nullable=True)
+    image: Optional[str] = Field(nullable=True)
 
 
 class NewsRegister(SQLModel):
     title: str = Field(nullable=False)
     content: Optional[str] = Field(sa_column=Column(Text), nullable=True)
+    image: Optional[str] = Field(nullable=True)
 
 
 class NewsUpdate(SQLModel):
     title: str = Field(nullable=False)
     content: Optional[str] = Field(sa_column=Column(Text), nullable=True)
+    image: Optional[str] = Field(nullable=True)

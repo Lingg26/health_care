@@ -1,11 +1,18 @@
-import json
+from fastapi import FastAPI
 from fastapi import Request
 from pydantic import BaseModel
 
 from health.app.ws.messages import NOTI_MESSAGE, CHAT_MESSAGE
-from health.main import sio
+from health.app.ws.socket_manager import SocketManager
+from health.core import settings
 
-
+# from health.main import sio
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    root_path=settings.APP_ROOT_PATH,
+)
+sio = SocketManager(app=app)
 class EventEmitter:
     def __init__(self, request: Request) -> None:
         self.request = request
