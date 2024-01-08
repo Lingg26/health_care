@@ -89,11 +89,10 @@ async def update_quantity(
 
 @router.delete(
     "/{cart_id}",
-    summary="Update quantity item",
-    response_model=ProductListResponseSchema
+    summary="Update quantity item"
 )
 async def delete_cart(
-        cart_id: id,
+        cart_id: int,
         db: Session = Depends(get_database_session),
         current_user: models.Account = Depends(get_current_authenticated_user),
 ):
