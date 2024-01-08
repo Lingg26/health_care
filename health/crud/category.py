@@ -22,8 +22,8 @@ class Category(CrudBase):
             list_filter.append(self.model.category_name.ilike(f"%{query_param.category_name}%"))
         if query_param.parent_category_id:
             list_filter.append(self.model.parent_category_id == query_param.parent_category_id)
-        else:
-            list_filter.append(self.model.parent_category_id == None)
+        # else:
+        #     list_filter.append(self.model.parent_category_id == None)
         return list_filter
 
     def get_sub_category_and_count_product(self, db, list_parent_category_ids, parent_id):

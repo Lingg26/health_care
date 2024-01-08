@@ -26,3 +26,19 @@ class ProductListRespnseSchema(BaseListResponse):
     data: List[ProductResponseSchema]
     categories: Optional[List]
 
+class ProductDetailSchema(SQLModel):
+    name: str = Field()
+    unit: str = Field()
+    category_id: int = Field()
+    price: int = Field()
+    origin: Optional[str] = Field()
+    producer: Optional[str] = Field()
+    description: Optional[str] = Field()
+    image: str = Field()
+    ingredient: Optional[str] = Field()
+    use: Optional[str] = Field()
+    how_to_use: Optional[str] = Field()
+    side_effects: Optional[str] = Field()
+    note: Optional[str] = Field()
+    preserve: Optional[str] = Field()
+    breadcrumb: Optional[list] = Field()
