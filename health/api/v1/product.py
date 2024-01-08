@@ -8,13 +8,22 @@ from sqlalchemy.orm import Session
 
 from health.crud import product_service, category_service
 from health.models import ProductRegister, Category
-from health.schemas.product import ProductRequestSchema, ProductListRespnseSchema, ProductResponseSchema
+from health.schemas.category import CategoryResponseSchema, CategoryChildResponseSchema
+from health.schemas.product import ProductRequestSchema, ProductListRespnseSchema, ProductResponseSchema, \
+    ProductDetailSchema
 from health.shared.core_type import UserType
 from health.shared.file_operator import create_and_save_file, validate_uploaded_file
 from health.tools.deps import get_current_authenticated_user, get_database_session
 from health.utils import generate_uuid
 
 router = APIRouter()
+
+def get_breadcrumb(category_id, list_category):
+    response = []
+    for category in list_category:
+        if category.id == category_id:
+            response.append(CategoryChildResponseSchema(**category.dict(), parent_category=get_breadcrumb(category.parent_category_id, list_category)))
+    return response
 
 
 @router.get(
@@ -24,7 +33,6 @@ router = APIRouter()
 )
 async def get_list_product(
         db: Session = Depends(get_database_session),
-        current_user: models.Account = Depends(get_current_authenticated_user),
         query_params: ProductRequestSchema = Depends()
 ):
     categories_response = []
@@ -64,15 +72,15 @@ async def get_list_product(
 @router.get(
     "/{product_id}",
     summary="get product detail",
-    response_model=models.Products
 )
 async def get_product_detail(
         product_id: int,
-        db: Session = Depends(get_database_session),
-        current_user: models.Account = Depends(get_current_authenticated_user)
+        db: Session = Depends(get_database_session)
 ):
     product = product_service.get(db, filter_by={"id": product_id})
-    return product
+    categories, _ = category_service.all(db)
+    data = ProductDetailSchema(**product.dict(), breadcrumb=get_breadcrumb(product.category_id, categories))
+    return data
 
 
 @router.post(
