@@ -16,6 +16,7 @@ class CategoryListQuerySchema(BaseRequestListSchema):
     category_name: Optional[str] = Field()
 
 class CategoryInDB(BaseModel):
+    id: int = Field()
     category_name: str = Field()
     notes: Optional[str] = Field()
     image: Optional[str] = Field()
