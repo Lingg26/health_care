@@ -23,6 +23,7 @@ class Cart(Base, TimestampMixin, table=True):
     )
 
 class CartRegister(SQLModel):
+    account_id: Optional[int] = Field()
     product_id: int = Field()
     quantity: int = Field()
 
