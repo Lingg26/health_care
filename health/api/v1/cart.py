@@ -51,13 +51,14 @@ async def creat_cart_item(
     if existing_cart:
         existing_cart.quantity += query_params.quantity
         db.commit()
-        return ProductResponse(**existing_cart.dict(), product_name=existing_cart.product.name,
-                               total_price=existing_cart.product.price * existing_cart.quantity)
+        return ProductResponse(**existing_cart.dict(), product_name=existing_cart.product_cart.name,
+                               total_price=existing_cart.product_cart.price * existing_cart.quantity)
     else:
-        query_params.__dict__["account_id"] = current_user.id
+        query_params.account_id = current_user.id
+        print(query_params)
         new_cart = cart_service.create(db, data=query_params)
-        return ProductResponse(**new_cart.dict(), product_name=new_cart.product.name,
-                               total_price=new_cart.product.price * new_cart.quantity)
+        return ProductResponse(**new_cart.dict(), product_name=new_cart.product_cart.name,
+                               total_price=new_cart.product_cart.price * new_cart.quantity)
 
 @router.put(
     "/",
