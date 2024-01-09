@@ -15,6 +15,9 @@ class AuthToken(SQLModel):
     refresh_token: Optional[str] = None
     token_type: str
 
+class LoginResponse(AuthToken):
+    user_type: Optional[str]
+
 
 class AuthTokenPayload(SQLModel):
     sub: Optional[str] = None
