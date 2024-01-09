@@ -28,8 +28,8 @@ async def get_list_cart_item(
     response = []
     total_price = 0
     for item in cart_items:
-        data = ProductResponse(**item.dict(), product_name=item.product.name,
-                               total_price=item.product.price * item.quantity)
+        data = ProductResponse(**item.dict(), product_name=item.product_cart.name,
+                               total_price=item.product_cart.price * item.quantity)
         total_price += data.total_price
         response.append(data)
     return ProductListResponse(data=response, paginate=paginate, total_price=total_price)
@@ -81,8 +81,8 @@ async def update_quantity(
             )
         else:
             update_cart = cart_service.update(db, filter_by={"id": cart.cart_id}, data=cart)
-            data = ProductResponse(**update_cart.dict(), product_name=update_cart.product.name,
-                                   total_price=update_cart.product.price * update_cart.quantity)
+            data = ProductResponse(**update_cart.dict(), product_name=update_cart.product_cart.name,
+                                   total_price=update_cart.product_cart.price * update_cart.quantity)
             total_price += data.total_price
             response.append(data)
     return ProductListResponseSchema(data=response, total_price=total_price)
