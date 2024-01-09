@@ -20,7 +20,7 @@ from health.models.auth import create_auth_tokens
 # from health.shared.file_operator import create_and_save_file
 # from health.utils import generate_uuid
 from health.core.settings import (
-    ACCESS_TOKEN_EXPIRE_MINUTES,
+    ACCESS_TOKEN_EXPIRE_MINUTES, PASSWORD_DEFAULT,
 )
 import requests
 import os
@@ -40,6 +40,8 @@ async def register_new_user(
     user_data: models.AccountRegister, session: Session = Depends(get_database_session)
 ) -> models.AuthToken:
     """Register a new user and return generated auth tokens."""
+    if not user_data.password:
+        user_data.password = PASSWORD_DEFAULT
     created_account = account_service.register(session, user_data)
     if user_data.user_type == UserType.ADMIN:
         conf = ConnectionConfig(
@@ -51,22 +53,11 @@ async def register_new_user(
             MAIL_TLS=True,
             MAIL_SSL=False
         )
-        template = """
-                    <html>
-                    <body>
-
-
-            <p>Hi !!!
-                    <br>Thanks for using fastapi mail, keep using it..!!!</p>
-
-
-                    </body>
-                    </html>
-                    """
+        template = f"Your password: {created_account.password}"
         validation = validate_email(user_data.mail_address)
         validated_email = validation["email"]
         message = MessageSchema(
-            subject="create data",
+            subject="Welcome to Health Care",
             body=template,
             recipients=[validated_email],
             subtype="html",
@@ -363,7 +354,7 @@ def refresh_token(
         if account.is_deleted:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='account not found')
         access_token = security.create_access_token(
-            subject=account.account_id,
+            subject=account.id,
             expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
         )
     except Exception as e:
