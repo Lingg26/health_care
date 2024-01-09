@@ -28,7 +28,7 @@ class CartRegister(SQLModel):
     quantity: int = Field()
 
 class CartUpdateQuantity(SQLModel):
-    cart_id: int = Field()
+    id: int = Field()
     quantity: int = Field()
 
 

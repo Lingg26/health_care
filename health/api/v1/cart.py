@@ -29,7 +29,7 @@ async def get_list_cart_item(
     total_price = 0
     for item in cart_items:
         data = ProductResponse(**item.dict(), product_name=item.product_cart.name,
-                               total_price=item.product_cart.price * item.quantity)
+                               total_price=item.product_cart.price * item.quantity, product_image=item.product_cart.image)
         total_price += data.total_price
         response.append(data)
     return ProductListResponse(data=response, paginate=paginate, total_price=total_price)
@@ -73,16 +73,16 @@ async def update_quantity(
     response = []
     total_price = 0
     for cart in carts:
-        existing_cart = cart_service.get(db, filter_by={"id": cart.cart_id, "is_active": True, "account_id": current_user.id})
+        existing_cart = cart_service.get(db, filter_by={"id": cart.id, "is_active": True, "account_id": current_user.id})
         if not existing_cart:
             raise HTTPException(
                 status.HTTP_404_NOT_FOUND,
-                detail=f"Cart {cart.cart_id} item is not found"
+                detail=f"Cart {cart.id} item is not found"
             )
         else:
-            update_cart = cart_service.update(db, filter_by={"id": cart.cart_id}, data=cart)
+            update_cart = cart_service.update(db, filter_by={"id": cart.id}, data=cart)
             data = ProductResponse(**update_cart.dict(), product_name=update_cart.product_cart.name,
-                                   total_price=update_cart.product_cart.price * update_cart.quantity)
+                                   total_price=update_cart.product_cart.price * update_cart.quantity, product_image=update_cart.product_cart.image)
             total_price += data.total_price
             response.append(data)
     return ProductListResponseSchema(data=response, total_price=total_price)
