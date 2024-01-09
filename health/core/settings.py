@@ -22,7 +22,7 @@ GOOGLE_ANDROID_APP_CLIENT_ID = os.getenv("GOOGLE_ANDROID_APP_CLIENT_ID")
 
 # Validate file
 ALLOWED_IMAGE_EXTENSIONS = (
-    os.getenv('ALLOWED_IMAGE_EXTENSIONS', 'jpeg,png,gif,jpg').replace(' ', '').split(',')
+    os.getenv('ALLOWED_IMAGE_EXTENSIONS', 'jpeg,png,gif,jpg,webp').replace(' ', '').split(',')
 )  # Default = jpeg,png,gif
 ALLOWED_IMAGE_SIZE = int(os.getenv('ALLOWED_IMAGE_SIZE', 20971520))  # Default = 200MB
 

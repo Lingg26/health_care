@@ -7,7 +7,7 @@ from fastapi.responses import RedirectResponse
 
 from health import models
 from health.core import settings
-from health.crud import order_service, order_item_service
+from health.crud import order_service, order_item_service, cart_service
 from health.models import CategoryRegister, CategoryUpdate, OrderRegister, UpdateStatus, PaymentVNpay
 from health.schemas.base import Paginate, BaseRequestListSchema
 from health.schemas.orders import OrdersListResponse, OrderDetailListResponseSchema, OrderDetailInDB, StatisticQuery
@@ -86,6 +86,8 @@ async def create_order(
         item = item.dict()
         item["order_id"] = new_order.id
         order_item_service.create(db, default_data=item)
+        cart_service.update(db, filter_by={"account_id": new_order.account_id, "product_id": item["product_id"]},
+                            default_data={"is_active": False})
     return new_order
 
 

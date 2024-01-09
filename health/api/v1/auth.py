@@ -96,11 +96,11 @@ def validate_email_for_registration(
     }
 
 
-@router.post('/login', response_model=models.auth.AuthToken, summary='User login')
+@router.post('/login', response_model=models.auth.LoginResponse, summary='User login')
 async def login(payload: models.AccountLogin, db: Session = Depends(get_database_session)):
     """Authenticate user and return generated auth tokens."""
     authenticated_account = account_service.authenticate(db, payload)
-    return create_auth_tokens(str(authenticated_account.id))
+    return {**create_auth_tokens(str(authenticated_account.id)).dict(), "user_type": authenticated_account.user_type}
 
 
 @router.post(
