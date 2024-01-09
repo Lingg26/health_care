@@ -81,9 +81,11 @@ async def create_order(
     if data.payments == PaymentsFlag.VNPAY:
         data.__dict__['is_paid'] = True
     order_data = data.dict(exclude={"items"})
-    new_order = order_service.create(db, data=order_data)
+    new_order = order_service.create(db, default_data=order_data)
     for item in data.items:
-        order_item_service.create(db, data=item)
+        item = item.dict()
+        item["order_id"] = new_order.id
+        order_item_service.create(db, default_data=item)
     return new_order
 
 
