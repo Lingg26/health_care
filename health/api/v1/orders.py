@@ -10,7 +10,7 @@ from health.core import settings
 from health.crud import order_service, order_item_service
 from health.models import CategoryRegister, CategoryUpdate, OrderRegister, UpdateStatus, PaymentVNpay
 from health.schemas.base import Paginate, BaseRequestListSchema
-from health.schemas.orders import OrdersListResponse, OrderDetailListResponseSchema, OrderDetailInDB
+from health.schemas.orders import OrdersListResponse, OrderDetailListResponseSchema, OrderDetailInDB, StatisticQuery
 from health.shared.core_type import UserType, DeleteFlag, PaymentsFlag
 from health.shared.vnpay import vnpay
 from health.tools.deps import get_current_authenticated_user, get_database_session
@@ -30,7 +30,7 @@ templates = Jinja2Templates(directory="templates")
 async def get_list_order(
         db: Session = Depends(get_database_session),
         current_user: models.Account = Depends(get_current_authenticated_user),
-        query_params: BaseRequestListSchema = Depends()
+        query_params: StatisticQuery = Depends()
 ):
     if current_user.user_type == UserType.ADMIN:
         orders, paginate = order_service.all(db, query_param=query_params)

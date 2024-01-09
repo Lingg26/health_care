@@ -1,3 +1,5 @@
+import json
+
 from fastapi import FastAPI
 from fastapi import Request
 from pydantic import BaseModel
@@ -19,8 +21,8 @@ class EventEmitter:
 
     async def _emit_event_to_room(self, event_name, data, room, **kwargs):
         payload_data = data.dict() if isinstance(data, BaseModel) else data
-        payload = {'data': payload_data, 'room': room, **kwargs}
-        await sio.emit(event_name, payload, room=room)
+        payload = {'data': json.dumps(payload_data), 'room': room, **kwargs}
+        await self.request.app.sio.emit(event_name, payload, room=room)
 
     async def send_noti_message(self, data, room, **kwargs):
         await self._emit_event_to_room(event_name=NOTI_MESSAGE, data=data, room=room, **kwargs)

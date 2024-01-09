@@ -8,6 +8,7 @@ from health import models
 from health.app.ws.utils import EventEmitter
 from health.crud import chat_history_service
 from health.models import ChatHistoryResgister
+from health.schemas.chats import ChatHistoryResponseSchema
 from health.shared.core_type import UserType
 from health.tools.deps import get_current_authenticated_user, get_database_session
 
@@ -118,7 +119,7 @@ async def send_message(
     )
 
     # socketio
-
+    message = ChatHistoryResponseSchema(**message.dict())
     emitter = EventEmitter(request=request)
     await emitter.send_chat_message(
         room=body.account_id,
