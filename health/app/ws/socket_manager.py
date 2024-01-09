@@ -20,24 +20,25 @@ class ChatNamespace(AsyncNamespace):
         connected_clients[sid] = set()
         # Initializing user session
         async with self.session(sid) as session:
-            session["account_id"] = user.account_id
+            session["account_id"] = user.id
 
     async def on_disconnect(self, sid):
-        rooms = connected_clients.pop(sid, [])
-        for room in rooms:
-            room_clients[room].remove(sid)
+        pass
+        # rooms = connected_clients.pop(sid, [])
+        # for room in rooms:
+        #     room_clients[room].remove(sid)
 
-    def on_join_room(self, sid, room):
-        self.enter_room(sid, room)
-        connected_clients[sid].add(room)
-        room_clients.setdefault(room, set()).add(sid)
+    async def on_join_room(self, sid, room):
+        await self.enter_room(sid, room)
+        # connected_clients[sid].add(room)
+        # room_clients.setdefault(room, set()).add(sid)
 
     def on_leave_room(self, sid, room):
         self.leave_room(sid, room)
 
     async def on_send_message(self, sid, data):
         async with self.session(sid) as session:
-            account_id = session.get("id", "Anonymous")
+            account_id = session.get("account_id", "Anonymous")
 
         room = data.get('room')
         message = data.get('message')
@@ -51,7 +52,8 @@ class ChatNamespace(AsyncNamespace):
         )
         db.add(new_chat)
         db.commit()
-        chat_obj = message
+        chat_obj = new_chat.dict()
+        chat_obj["created_at"] = str(new_chat.created_at)
         await self.emit(
             'new_message',
             {

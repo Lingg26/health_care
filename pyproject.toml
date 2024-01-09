@@ -38,6 +38,7 @@ google-auth = "^2.23.0"
 fastapi-mail = "1.1.1"
 blinker = "^1.7.0"
 aioredis = "^2.0.1"
+slack-sdk = "^3.26.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
