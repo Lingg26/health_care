@@ -16,6 +16,7 @@ class ProductResponse(ProductInDB):
     product_name: Optional[str]
     total_price: Optional[int]
     product_image: Optional[str]
+    unit: Optional[str]
 
 class ProductListResponse(BaseListResponse):
     data: List[ProductResponse]

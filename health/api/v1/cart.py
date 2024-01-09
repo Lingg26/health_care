@@ -29,7 +29,8 @@ async def get_list_cart_item(
     total_price = 0
     for item in cart_items:
         data = ProductResponse(**item.dict(), product_name=item.product_cart.name,
-                               total_price=item.product_cart.price * item.quantity, product_image=item.product_cart.image)
+                               total_price=item.product_cart.price * item.quantity, product_image=item.product_cart.image,
+                               unit=item.product_cart.unit)
         total_price += data.total_price
         response.append(data)
     return ProductListResponse(data=response, paginate=paginate, total_price=total_price)
@@ -55,7 +56,6 @@ async def creat_cart_item(
                                total_price=existing_cart.product_cart.price * existing_cart.quantity)
     else:
         query_params.account_id = current_user.id
-        print(query_params)
         new_cart = cart_service.create(db, data=query_params)
         return ProductResponse(**new_cart.dict(), product_name=new_cart.product_cart.name,
                                total_price=new_cart.product_cart.price * new_cart.quantity)
@@ -82,7 +82,9 @@ async def update_quantity(
         else:
             update_cart = cart_service.update(db, filter_by={"id": cart.id}, data=cart)
             data = ProductResponse(**update_cart.dict(), product_name=update_cart.product_cart.name,
-                                   total_price=update_cart.product_cart.price * update_cart.quantity, product_image=update_cart.product_cart.image)
+                                   total_price=update_cart.product_cart.price * update_cart.quantity,
+                                   product_image=update_cart.product_cart.image,
+                                   unit=update_cart.product_cart.unit)
             total_price += data.total_price
             response.append(data)
     return ProductListResponseSchema(data=response, total_price=total_price)
