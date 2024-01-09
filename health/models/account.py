@@ -50,7 +50,7 @@ class AccountRegister(SQLModel):
     birthday: datetime = Field()
     tel: str = Field()
     mail_address: EmailStr = Field()
-    password: str = Field()
+    password: Optional[str] = Field()
     notes: Optional[str] = Field(nullable=True)
     user_type: str = Field(nullable=False)
 
