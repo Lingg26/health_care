@@ -26,11 +26,12 @@ async def get_list_parent_category(
         db: Session = Depends(get_database_session),
         query_params: CategoryListQuerySchema = Depends()
 ):
-    query_params.__dict__["is_deleted"] = DeleteFlag.IS_NOT_DELETED
-    categories, paginate = category_service.all(db, query_param=query_params)
+    categories = db.query(models.Category).filter(models.Category.is_deleted == 0).all()
     response = []
     for category in categories:
-        if not category.parent_category_id:
+        if not query_params.parent_category_id and not category.parent_category_id:
+            response.append(CategoryResponseSchema(**category.dict(), sub_category=get_sub_categories(category.id, categories)))
+        elif query_params.parent_category_id and category.parent_category_id == query_params.parent_category_id:
             response.append(CategoryResponseSchema(**category.dict(), sub_category=get_sub_categories(category.id, categories)))
     return response
 
