@@ -189,7 +189,7 @@ async def get_payment(
             result = {'RspCode': '97', 'Message': 'Invalid Signature'}
     else:
         result = {'RspCode': '99', 'Message': 'Invalid request'}
-    return
+    return result
 
 
 @router.get(
