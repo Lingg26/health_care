@@ -22,6 +22,8 @@ class OrderDetailInDB(BaseModel):
     product_name: str = Field()
     quantity: int = Field()
     price: int = Field()
+    image: Optional[str] = Field()
+    unit: Optional[str] = Field()
 
 class OrderDetailListResponseSchema(BaseModel):
     data: List[OrderDetailInDB]
