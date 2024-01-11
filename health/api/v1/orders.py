@@ -102,7 +102,8 @@ async def get_list_order(
         orders_items = []
         for item in items:
             orders_items.append(OrderDetailInDB(**item.dict(), product_name=item.product_order.name,
-                               price=item.product_order.price * item.quantity))
+                               price=item.product_order.price * item.quantity, image=item.product_order.image,
+                               unit=item.product_order.unit))
         response.append(OrderResponse(**order.dict(), mail_address=order.account.mail_address, items=orders_items))
     return OrdersListResponse(data=response, paginate=paginate)
 
@@ -130,7 +131,8 @@ async def get_detail_order(
     response = []
     for item in order_items:
         data = OrderDetailInDB(**item.dict(), product_name=item.product_order.name,
-                               price=item.product_order.price * item.quantity)
+                               price=item.product_order.price * item.quantity, image=item.product_order.image,
+                               unit=item.product_order.unit)
         response.append(data)
     return response
 
