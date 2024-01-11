@@ -33,6 +33,7 @@ class StatisticQuery(BaseRequestListSchema):
 
 class OrderResponse(OrdersInDB):
     mail_address: Optional[str]
+    items: List[OrderDetailInDB]
 
 class OrdersListResponse(BaseListResponse):
     data: List[OrderResponse]

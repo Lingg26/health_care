@@ -98,7 +98,12 @@ async def get_list_order(
         orders, paginate = order_service.all(db, filter_by={"account_id": current_user.id}, query_param=query_params)
     response = []
     for order in orders:
-        response.append(OrderResponse(**order.dict(), mail_address=order.account.mail_address))
+        items = db.query(models.OrdersItem).filter(models.OrdersItem.order_id == order.id).all()
+        orders_items = []
+        for item in items:
+            orders_items.append(OrderDetailInDB(**item.dict(), product_name=item.product_order.name,
+                               price=item.product_order.price * item.quantity))
+        response.append(OrderResponse(**order.dict(), mail_address=order.account.mail_address, items=orders_items))
     return OrdersListResponse(data=response, paginate=paginate)
 
 

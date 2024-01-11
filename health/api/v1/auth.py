@@ -53,7 +53,9 @@ async def register_new_user(
             MAIL_TLS=True,
             MAIL_SSL=False
         )
-        template = f"Your password: {created_account.password}"
+        template = f"" \
+                   f"Your password: {user_data.password}" \
+                   f"Go to Health Care: http://localhost:3000/login"
         validation = validate_email(user_data.mail_address)
         validated_email = validation["email"]
         message = MessageSchema(
