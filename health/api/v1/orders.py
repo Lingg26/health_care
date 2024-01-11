@@ -134,7 +134,9 @@ async def get_detail_order(
                                price=item.product_order.price * item.quantity, image=item.product_order.image,
                                unit=item.product_order.unit)
         response.append(data)
-    return response
+    return {
+        "data": response
+    }
 
 
 @router.post(
