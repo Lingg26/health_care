@@ -30,6 +30,7 @@ class OrderDetailListResponseSchema(BaseModel):
     data: List[OrderDetailInDB]
 
 class StatisticQuery(BaseRequestListSchema):
+    state: Optional[int]
     start_date: Optional[date]
     end_date: Optional[date]
 

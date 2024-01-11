@@ -85,6 +85,7 @@ async def create_order(
     for item in data.items:
         item = item.dict()
         item["order_id"] = new_order.id
+        item["state"] = 1
         order_item_service.create(db, default_data=item)
         cart_service.update(db, filter_by={"account_id": new_order.account_id, "product_id": item["product_id"]},
                             default_data={"is_active": False})

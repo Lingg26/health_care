@@ -38,7 +38,7 @@ MAIL_SERVER = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 PASSWORD_DEFAULT = "Admin1234@"
 #VNPAY
 VNPAY_TMN_CODE = os.getenv('VNPAY_TMN_CODE', 'EZ843100')
-VNPAY_RETURN_URL = 'https://localhost03012024.com/payment_return'
+VNPAY_RETURN_URL = 'http://localhost:3000/payment_return'
 VNPAY_PAYMENT_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
 VNPAY_HASH_SECRET_KEY = 'RRLGQGNPNVBHDDBNGJOOWILTVOZHAYXQ'
 
