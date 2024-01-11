@@ -14,6 +14,8 @@ class Orders(CrudBase):
 
     def get_filter_list(self, query_param: BaseModel) -> list:
         list_filter = []
+        if query_param.state:
+            list_filter.append(self.model.state == query_param.state)
         if query_param.start_date:
             list_filter.append(self.model.created_at >= query_param.start_date)
         if query_param.end_date:

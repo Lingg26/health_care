@@ -13,7 +13,7 @@ class Orders(Base, TimestampMixin, table=True):
     receiving_location: str = Field(nullable=False)
     tel: Optional[str] = Field()
     payments: Optional[str] = Field(nullable=True)
-    state: Optional[str] = Field(nullable=True)
+    state: Optional[int] = Field(nullable=True)
     total_price: int = Field(nullable=False)
     is_paid: bool = Field(default=False)
 
