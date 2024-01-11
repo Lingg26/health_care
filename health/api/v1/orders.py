@@ -23,6 +23,65 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get(
+    "/payment_return"
+)
+async def payment_return(request: Request):
+    # print("aaaaa")
+    # data = request.query_params.items()
+    # response = {}
+    # for i in data:
+    #     response[i[0]] = i[1]
+    # if vnpay.validate_response(settings.VNPAY_HASH_SECRET_KEY):
+    #     return "Thành công"
+    # else:
+    #     return "Thất bại"
+    inputData = request.query_params
+    print(inputData)
+    if inputData:
+        vnp = vnpay()
+        vnp.responseData = dict(inputData)
+        order_id = inputData['vnp_TxnRef']
+        amount = int(inputData['vnp_Amount']) / 100
+        order_desc = inputData['vnp_OrderInfo']
+        vnp_TransactionNo = inputData['vnp_TransactionNo']
+        vnp_ResponseCode = inputData['vnp_ResponseCode']
+        vnp_TmnCode = inputData['vnp_TmnCode']
+        vnp_PayDate = inputData['vnp_PayDate']
+        vnp_BankCode = inputData['vnp_BankCode']
+        vnp_CardType = inputData['vnp_CardType']
+        if vnp.validate_response(settings.VNPAY_HASH_SECRET_KEY):
+            if vnp_ResponseCode == "00":
+                return {"title": "Kết quả thanh toán",
+                        "result": "Thành công",
+                        "order_id": order_id,
+                        "amount": amount,
+                        "order_desc": order_desc,
+                        "vnp_TransactionNo": vnp_TransactionNo,
+                        "vnp_ResponseCode": vnp_ResponseCode,
+                }
+            else:
+                return {"title": "Kết quả thanh toán",
+                        "result": "Lỗi",
+                        "order_id": order_id,
+                        "amount": amount,
+                        "order_desc": order_desc,
+                        "vnp_TransactionNo": vnp_TransactionNo,
+                        "vnp_ResponseCode": vnp_ResponseCode,
+                        }
+        else:
+            return {"title": "Kết quả thanh toán", "result": "Lỗi",
+                    "order_id": order_id,
+                    "amount": amount,
+                    "order_desc": order_desc, "vnp_TransactionNo": vnp_TransactionNo,
+                    "vnp_ResponseCode": vnp_ResponseCode, "msg": "Sai checksum",
+
+                    }
+
+    else:
+        return {"title": "Kết quả thanh toán", "result": "", }
+
+
+@router.get(
     "/",
     summary="Get list orders",
     response_model=OrdersListResponse
@@ -190,55 +249,3 @@ async def get_payment(
     else:
         result = {'RspCode': '99', 'Message': 'Invalid request'}
     return result
-
-
-@router.get(
-    "/payment_return"
-)
-async def payment_return(request: Request):
-    data = request.query_params.items()
-    response = {}
-    for i in data:
-        response[i[0]] = i[1]
-    if vnpay.validate_response(response):
-        return "Thành công"
-    else:
-        return "Thất bại"
-    # inputData = request.GET
-    # if inputData:
-    #     vnp = vnpay()
-    #     vnp.responseData = inputData.dict()
-    #     order_id = inputData['vnp_TxnRef']
-    #     amount = int(inputData['vnp_Amount']) / 100
-    #     order_desc = inputData['vnp_OrderInfo']
-    #     vnp_TransactionNo = inputData['vnp_TransactionNo']
-    #     vnp_ResponseCode = inputData['vnp_ResponseCode']
-    #     vnp_TmnCode = inputData['vnp_TmnCode']
-    #     vnp_PayDate = inputData['vnp_PayDate']
-    #     vnp_BankCode = inputData['vnp_BankCode']
-    #     vnp_CardType = inputData['vnp_CardType']
-    #     if vnp.validate_response(settings.VNPAY_HASH_SECRET_KEY):
-    #         if vnp_ResponseCode == "00":
-    #             return templates.TemplateResponse(request, "payment_return.html", {"title": "Kết quả thanh toán",
-    #                                                                                "result": "Thành công",
-    #                                                                                "order_id": order_id,
-    #                                                                                "amount": amount,
-    #                                                                                "order_desc": order_desc,
-    #                                                                                "vnp_TransactionNo": vnp_TransactionNo,
-    #                                                                                "vnp_ResponseCode": vnp_ResponseCode})
-    #         else:
-    #             return templates.TemplateResponse(request, "payment_return.html", {"title": "Kết quả thanh toán",
-    #                                                                                "result": "Lỗi",
-    #                                                                                "order_id": order_id,
-    #                                                                                "amount": amount,
-    #                                                                                "order_desc": order_desc,
-    #                                                                                "vnp_TransactionNo": vnp_TransactionNo,
-    #                                                                                "vnp_ResponseCode": vnp_ResponseCode})
-    #     else:
-    #         return templates.TemplateResponse(request, "payment_return.html",
-    #                                           {"title": "Kết quả thanh toán", "result": "Lỗi", "order_id": order_id,
-    #                                            "amount": amount,
-    #                                            "order_desc": order_desc, "vnp_TransactionNo": vnp_TransactionNo,
-    #                                            "vnp_ResponseCode": vnp_ResponseCode, "msg": "Sai checksum"})
-    # else:
-    #     return templates.TemplateResponse(request, "payment_return.html", {"title": "Kết quả thanh toán", "result": ""})
