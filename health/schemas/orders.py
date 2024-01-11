@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from typing import List
 from typing import Optional
 
@@ -15,6 +15,7 @@ class OrdersInDB(BaseModel):
     payments: Optional[str] = Field()
     state: Optional[int] = Field()
     total_price: int = Field()
+    created_at: Optional[datetime]
 
 class OrderDetailInDB(BaseModel):
     order_id: int = Field()
@@ -24,6 +25,7 @@ class OrderDetailInDB(BaseModel):
     price: int = Field()
     image: Optional[str] = Field()
     unit: Optional[str] = Field()
+    created_at: Optional[datetime]
 
 class OrderDetailListResponseSchema(BaseModel):
     data: List[OrderDetailInDB]
