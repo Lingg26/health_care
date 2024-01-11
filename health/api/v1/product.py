@@ -43,21 +43,25 @@ async def get_list_product(
                 Category.parent_category_id == query_params.category_id
             )
         ).all()
-        if categories:
-            categories_id = [category.id for category in categories]
-            for id in categories_id:
-                sub_categories = db.query(Category).filter(Category.parent_category_id == id)
-                if not sub_categories:
-                    categories_count = category_service.get_sub_category_and_count_product(db, [], id)
-                    sub_category.append(id)
-                else:
-                    sub_categories_id = [category.id for category in sub_categories]
-                    categories_count = category_service.get_sub_category_and_count_product(db, sub_categories_id, id)
-                    sub_category.extend(sub_categories_id)
+    else:
+        categories = db.query(Category).filter().all()
+    if categories:
+        categories_id = [category.id for category in categories]
+        for id in categories_id:
+            sub_categories = db.query(Category).filter(Category.parent_category_id == id)
+            if not sub_categories:
+                categories_count = category_service.get_sub_category_and_count_product(db, [], id)
+                sub_category.append(id)
+            else:
+                sub_categories_id = [category.id for category in sub_categories]
+                categories_count = category_service.get_sub_category_and_count_product(db, sub_categories_id, id)
+                sub_category.extend(sub_categories_id)
+            if categories_count:
                 categories_response.append(categories_count)
-        else:
-            categories_count = category_service.get_sub_category_and_count_product(db, [], query_params.category_id)
-            sub_category.append(query_params.category_id)
+    else:
+        categories_count = category_service.get_sub_category_and_count_product(db, [], query_params.category_id)
+        sub_category.append(query_params.category_id)
+        if categories_count:
             categories_response.append(categories_count)
 
     query_params.__dict__["sub_categories"] = sub_category
