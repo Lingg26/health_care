@@ -90,3 +90,5 @@ class UpdateProfileAccount(SQLModel):
     tel: str = Field()
     notes: Optional[str] = Field(nullable=True)
 
+class AccountQuery(SQLModel):
+    account_id: Optional[int] = Field()
