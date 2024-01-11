@@ -17,6 +17,11 @@ class Orders(Base, TimestampMixin, table=True):
     total_price: int = Field(nullable=False)
     is_paid: bool = Field(default=False)
 
+    account: "Account" = Relationship(
+        back_populates="orders",
+        sa_relationship_kwargs={"uselist": False}
+    )
+
 
 class OrdersItem(Base, TimestampMixin, table=True):
     __tablename__ = "orders_item"

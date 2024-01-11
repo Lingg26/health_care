@@ -1,10 +1,10 @@
 import re
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from fastapi import HTTPException, status
 from pydantic import EmailStr, validator
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import Column, Text
 
 from health.core.security import get_password_hash
@@ -24,6 +24,10 @@ class Account(Base, TimestampMixin, table=True):
     password: Optional[str] = Field()
     user_type: str = Field(nullable=False)
 
+    orders: List["Orders"] = Relationship(
+        back_populates="account",
+        sa_relationship_kwargs={"uselist": True},
+    )
 
 def is_strong_password(password: str) -> bool:
     pattern = r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$"

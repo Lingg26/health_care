@@ -10,7 +10,8 @@ from health.core import settings
 from health.crud import order_service, order_item_service, cart_service
 from health.models import CategoryRegister, CategoryUpdate, OrderRegister, UpdateStatus, PaymentVNpay
 from health.schemas.base import Paginate, BaseRequestListSchema
-from health.schemas.orders import OrdersListResponse, OrderDetailListResponseSchema, OrderDetailInDB, StatisticQuery
+from health.schemas.orders import OrdersListResponse, OrderDetailListResponseSchema, OrderDetailInDB, StatisticQuery, \
+    OrderResponse
 from health.shared.core_type import UserType, DeleteFlag, PaymentsFlag
 from health.shared.vnpay import vnpay
 from health.tools.deps import get_current_authenticated_user, get_database_session
@@ -95,7 +96,10 @@ async def get_list_order(
         orders, paginate = order_service.all(db, query_param=query_params)
     else:
         orders, paginate = order_service.all(db, filter_by={"account_id": current_user.id}, query_param=query_params)
-    return OrdersListResponse(data=orders, paginate=paginate)
+    response = []
+    for order in orders:
+        response.append(OrderResponse(**order.dict(), mail_address=order.account.mail_address))
+    return OrdersListResponse(data=response, paginate=paginate)
 
 
 @router.get(
