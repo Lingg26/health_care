@@ -102,7 +102,7 @@ async def update_category(
 
 
 @router.get(
-    "/{categor_id}",
+    "/{category_id}",
     response_model=models.Category,
     summary="Get category information"
 )
